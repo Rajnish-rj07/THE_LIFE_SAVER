@@ -40,24 +40,49 @@ app.post("/api/profile", requireAuth, async (req: AuthRequest, res) => {
 
 // Lazy-initialized Gemini client
 let aiClient: GoogleGenAI | null = null;
+let currentClientApiKey = "";
 let last429Timestamp = 0;
 let last429ApiKey = "";
 const QUOTA_COOLDOWN_MS = 10 * 60 * 1000; // 10 minutes cache/cooldown for quota warnings
 
 function getAIClient(): GoogleGenAI {
-  if (!aiClient) {
-    const key = process.env.GEMINI_API_KEY;
-    if (!key) {
-      throw new Error("GEMINI_API_KEY is not defined in the environment variables.");
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) {
+    throw new Error("GEMINI_API_KEY is not defined in the environment variables.");
+  }
+
+  if (!aiClient || currentClientApiKey !== key) {
+    const headers: Record<string, string> = {
+      'User-Agent': 'aistudio-build'
+    };
+
+    const isBearer = key.startsWith('ya29.') || key.startsWith('AQ.');
+    if (isBearer) {
+      headers['Authorization'] = `Bearer ${key}`;
     }
-    aiClient = new GoogleGenAI({
-      apiKey: key,
-      httpOptions: {
-        headers: {
-          'User-Agent': 'aistudio-build'
+
+    // Unset GEMINI_API_KEY temporarily if it is a bearer token so that the SDK constructor
+    // does not automatically fetch it and append an invalid 'x-goog-api-key' header.
+    const originalEnvKey = process.env.GEMINI_API_KEY;
+    if (isBearer) {
+      delete process.env.GEMINI_API_KEY;
+    }
+
+    try {
+      aiClient = new GoogleGenAI({
+        apiKey: isBearer ? undefined : key,
+        httpOptions: {
+          headers
         }
+      });
+    } finally {
+      // Always restore the env variable
+      if (isBearer) {
+        process.env.GEMINI_API_KEY = originalEnvKey;
       }
-    });
+    }
+
+    currentClientApiKey = key;
   }
   return aiClient;
 }
