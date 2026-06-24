@@ -8,7 +8,7 @@ Built with **React**, **Vite**, **Express**, **Tailwind CSS**, **Cloud SQL (Post
 
 ## 📖 Table of Contents
 1. [Submission Details](#-submission-details)
-   - [Problem Statement Selected](#problem-statement-selected)
+   - [Problem Statement](#problem-statement)
    - [Solution Overview](#solution-overview)
    - [Key Features](#key-features)
    - [Technologies Used](#technologies-used)
@@ -24,7 +24,7 @@ Built with **React**, **Vite**, **Express**, **Tailwind CSS**, **Cloud SQL (Post
 
 Here are the complete details formatted for your project submission or Google Doc:
 
-### Problem Statement Selected
+### Problem Statement
 In high-pressure academic and professional environments, traditional productivity tools fail because they ignore the primary human obstacle: **emotional resistance and cognitive friction**. Passive reminder systems, calendar alerts, and sterile list-builders often compound stress rather than easing the transition into action, creating a "database of guilt" that triggers task avoidance, executive dysfunction, and severe procrastination.
 The selected problem statement focuses on transforming the planning experience from an source of anxiety into a low-friction, supportive, and active companion that uses emotional alignment and micro-commitments to break through task-initiation blocks.
 
